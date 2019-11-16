@@ -32,7 +32,7 @@ Else you have to put your MySQL-Credentials directly in the script.
 The installation is quite easy - just download the script and mark it executable.
 
 ```
-curl -o /usr/local/bin/create_website https://gitlab.com/dominicpratt/create-nginx-config/raw/master/create_website.sh
+curl -o /usr/local/bin/create_website https://raw.githubusercontent.com/dominicpratt/create-nginx-config/master/create_website.sh
 chmod +x /usr/local/bin/create_website
 ```
 
