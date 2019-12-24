@@ -12,10 +12,6 @@
 #   bash_version   : 5.0.3(1)-release
 
 userpwd=$(pwgen 12 1)
-domainRegex="^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$"
-
-bold=$(tput bold)
-normal=$(tput sgr0)
 
 # Check if script is being run by root
 if [[ $EUID -ne 0 ]]; then
@@ -99,7 +95,7 @@ _EOF_
 
 function add_user
 {
-    adduser --quiet --disabled-password --shell /bin/sh --home /srv/www/$dname --gecos "$uname" --no-create-home $uname
+    adduser --quiet --disabled-password --shell /bin/sh --home /srv/www/"$dname" --gecos "$uname" --no-create-home "$uname"
     echo "$uname:$userpwd" | chpasswd
 }
 
@@ -114,12 +110,6 @@ echo "***      Site Setup      ***"
 # =======================
 echo -n "==> Enter new domain name (domain.com):  "
 read -r dname
-
-until [[ $domain =~ $domainRegex ]]
-do
-	echo "Enter valid domain: "
-	read -r dname
-done
 
 echo -n "==> Enter new user name (domaincom):  "
 read -r uname
