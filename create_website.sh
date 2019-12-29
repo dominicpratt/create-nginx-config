@@ -15,24 +15,22 @@ userpwd=$(pwgen 12 1)
 
 # Check if script is being run by root
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 1>&2
-   exit 1
+    echo "This script must be run as root" 1>&2
+    exit 1
 fi
 
 # =======================
 # function blocks
 # =======================
 
-function make_database
-{
-    mysql --defaults-extra-file=/root/.my.cnf -e "CREATE DATABASE ${uname}";
+function make_database() {
+    mysql --defaults-extra-file=/root/.my.cnf -e "CREATE DATABASE ${uname}"
     mysql --defaults-extra-file=/root/.my.cnf -e "GRANT ALL ON ${uname}.* TO ${uname} IDENTIFIED BY '${userpwd}';"
     mysql --defaults-extra-file=/root/.my.cnf -e "flush privileges;"
 }
 
-function make_vhost
-{
-cat <<- _EOF_
+function make_vhost() {
+    cat <<-_EOF_
 server {
         listen 80;
 
@@ -66,9 +64,8 @@ server {
 _EOF_
 }
 
-function make_phppool
-{
-cat <<- _EOF_
+function make_phppool() {
+    cat <<-_EOF_
 [$uname]
 prefix = /srv/www/$dname
 user = $uname
@@ -93,8 +90,7 @@ php_admin_value[open_basedir] = /srv/www/$dname/web
 _EOF_
 }
 
-function add_user
-{
+function add_user() {
     adduser --quiet --disabled-password --shell /bin/sh --home /srv/www/"$dname" --gecos "$uname" --no-create-home "$uname"
     echo "$uname:$userpwd" | chpasswd
 }
@@ -131,12 +127,12 @@ chown "$uname":"$uname" /srv/www/"$dname"/web
 # =======================
 # build vhost config file
 # =======================
-make_vhost > /etc/nginx/sites-available/"$dname.conf"
+make_vhost >/etc/nginx/sites-available/"$dname.conf"
 
 # =======================
 # build php config file
 # =======================
-make_phppool > /etc/php/7.3/fpm/pool.d/"$dname.conf"
+make_phppool >/etc/php/7.3/fpm/pool.d/"$dname.conf"
 
 # =======================
 # create mysql-database
